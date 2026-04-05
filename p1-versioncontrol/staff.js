@@ -22,5 +22,13 @@ const staff = [
         role: "Member",
         github: "Urielele",
         foto:"foto/beemo.png",
-    }
+    },
+    {
+        name: "Tegar Prasetyo",
+        division: "PTI",
+        batch: "2026",
+        role: "Member",
+        github: "tegarprasety0",
+        foto:"",
+    },
 ];
