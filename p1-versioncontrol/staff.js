@@ -8,11 +8,19 @@ const staff = [
         foto:"foto/prisma.png",
     },
     {
-        name: "Duhairillah",
+        name: "M. Aditia Putra Pratama",
         division: "PTI",
         batch: "2025",
         role: "Member",
-        github: "SerenaaaaRN",
+        github: "aditia-prtm",
+        foto:"",
+    },
+      {
+        name: "Alfinandra Rashyid Pratama",
+        division: "PIP",
+        batch: "2026",
+        role: "Member",
+        github: "lilkyogre03-netizen",
         foto:"",
     },
     {
