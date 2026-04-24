@@ -1,3 +1,2 @@
 Prisma  : https://github.com/ak7prisma/Card-Battle
 Fachri S: https://github.com/fachriisy/bebek-fachri.git
-Noufal I: https://github.com/Noufalpali/Test_Ujicoba.git

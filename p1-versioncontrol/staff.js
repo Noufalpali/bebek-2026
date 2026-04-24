@@ -53,7 +53,7 @@ const staff = [
         batch: "2026",
         role: "Member",
         github: "Urielele",
-        foto:"foto/beemo.png",
+        foto:"foto/beemo.jpg",
     },
     {
 
@@ -62,6 +62,7 @@ const staff = [
         batch: "2026",
         role: "Member",
         github: "tegarprasety0",
+        foto: "foto/tegar.png"
     },
     {
         name: "M.Farrel Rizqierli Fairuz",
@@ -72,11 +73,27 @@ const staff = [
         foto:"",
     },
     {
+        name: "M Radittyo Kalin",
+        division: "PTI",
+        batch: "2026",
+        role: "Member",
+        github: "raditkal",
+        foto:"",
+    },
+    {
         name: "Noufal Izdihar",
         division: "PIP",
         batch: "2026",
         role: "Member",
         github: "Noufalpali",
+        foto:"",
+    },
+    {
+        name: "Muhammad Fhanus Meitama Puta",
+        division: "PIP",
+        batch: "2026",
+        role: "Member",
+        github: "fhanus123",
         foto:"",
     },
     {
