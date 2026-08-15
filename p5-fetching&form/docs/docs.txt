@@ -1,0 +1,3 @@
+Use Effect:https://react.dev/reference/react/useEffect
+React Hooks Form:https://react-hook-form.com/
+Zod:https://zod.dev/
