@@ -1,17 +1,15 @@
 import { FaHome } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
 
-export default function Home(){
+export default function Test(){
   return (
     <div className="min-h-screen text-white flex flex-col items-center justify-center">
         <FaHome size={70}/>
         <h1 className="text-5xl font-black text-yellow-400 mb-4">
-            Selamat Datang di Home
+            Selamat Datang di Testtt
         </h1>
         <p className="text-slate-400 text-lg max-w-md text-center">
             Ini adalah halaman utama website.
         </p>
-        <NavLink to="/about/test" className="w-20 bg-green-600" >Menuju Test</NavLink>
     </div>
   );
 };
