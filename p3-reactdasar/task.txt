@@ -14,3 +14,4 @@ Zaki   : https://github.com/kaita937/tugas-pert3-Zaki
 Fachri s: https://github.com/fachriisy/p3-bebek.git
 Zulae  : https://github.com/beautifulmonsta/tugas-react
 Rizki : https://github.com/RizkiArdiansyah-www/BelajarReact.git
+Farel : https://github.com/FarelAgustian/tugas-react
