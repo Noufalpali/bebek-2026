@@ -1,0 +1,91 @@
+1. ZOD SCHEMA (src/schemas/clubSchema.js)
+
+Schema ini mendefinisikan aturan validasi untuk semua field form:
+
+  - strTeam     : string, trim, wajib diisi, minimal 3 karakter
+  - strStadium  : string, trim, wajib diisi, minimal 3 karakter
+  - intFormedYear: z.coerce.number(), minimal 1800, maksimal tahun sekarang, harus bulat
+  - strBadge    : string, opsional, tapi kalau diisi harus URL (http/https)
+
+Poin penting:
+  - z.coerce.number() otomatis mengubah string input (HTML input selalu string)
+    menjadi angka sebelum validasi berjalan.
+  - .refine() pada strBadge untuk validasi custom (regex URL).
+  - Schema ini single source of truth, bisa di-reuse untuk backend juga.
+
+
+2. REACT HOOK FORM (src/components/ClubForm.jsx)
+
+Form component yang menggunakan react-hook-form + zodResolver:
+
+  useForm({
+    resolver: zodResolver(clubSchema),   // ← Zod jadi resolver RHF
+    defaultValues: { ... }               // ← Semua field kosong di awal
+  })
+
+Yang didapat dari useForm():
+  - register()       → mendaftarkan input ke form (pakai ref, bukan value/onChange)
+  - handleSubmit()   → bungkus validasi + submit jadi satu
+  - reset()          → kosongkan form ke defaultValues
+  - errors           → object berisi error per field dari Zod
+  - isSubmitting     → status submitting
+
+Alur di dalam form:
+  a. User isi form → register('strTeam') memantau input secara real-time
+  b. User klik submit → handleSubmit(onSubmit) dipanggil
+  c. Zod validasi jalan via zodResolver
+  d. Kalau ERROR → errors terisi, FieldError tampilkan pesan di bawah input
+  e. Kalau BERHASIL → data (sudah di-parse Zod) diteruskan ke onSubmit()
+  f. onSubmit() → onAddClub(data) kirim ke parent, reset() kosongkan form
+
+
+3. STATE MANAGEMENT (src/App.jsx)
+
+  - clubs state     → array daftar klub, diisi dari API + klub baru
+  - handleAddClub() → prepend klub baru ke array (setClubs([club, ...prev]))
+  - scrollToForm()  → scroll ke form section saat user klik "Tambah Klub"
+  - formRef         → ref ke form section untuk smooth scroll
+
+Alur keseluruhan:
+  User klik "Tambah Klub" di Header/Footer
+        ↓
+  scrollToForm() → form scroll into view
+        ↓
+  User isi form → klik submit
+        ↓
+  Zod validasi → gagal? tampilkan error | berhasil? lanjut
+        ↓
+  onAddClub(data) → setClubs([newClub, ...oldClubs])
+        ↓
+  reset() → form kosong, klub baru muncul di paling atas daftar
+
+  PERBANDINGAN: ZOD vs TANPA ZOD
+
+TANPA ZOD (Manual Validation):
+  - Validasi manual pakai if-else per field, makin banyak field makin panjang
+  - Harus parseInt() sendiri untuk number
+  - Error handling manual set/clear per field
+  - Mudah lupa satu aturan, error bocor ke user
+
+DENGAN ZOD:
+  - Deklaratif dalam satu schema object
+  - z.coerce.number() otomatis convert string ke number
+  - .refine() untuk custom validation (regex URL, dll)
+  - Error message built-in per field
+  - Schema bisa di-reuse ke backend (full-stack validation)
+
+
+  PERBANDINGAN: RHF vs FORM MANUAL
+
+FORM MANUAL (useState + onChange):
+  - Banyak boilerplate: useState, onChange, value, e.preventDefault()
+  - Controlled input → re-render setiap keystroke
+  - Error handling, reset, dirty tracking harus di-implement sendiri
+  - Tambah field = tambah state + onChange + validasi manual
+
+REACT HOOK FORM:
+  - Uncontrolled by default (pakai ref) → tidak re-render tiap keystroke
+  - handleSubmit bungkus validasi + submit
+  - errors otomatis dari Zod, tinggal render
+  - reset() langsung tersedia
+  - Tambah field = tambah 1 baris register() di form + 1 baris di schema

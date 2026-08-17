@@ -5,6 +5,7 @@ import ClubForm from './components/ClubForm'
 import ClubList from './components/ClubList'
 
 function App() {
+  //Persiapan State
   const [clubs, setClubs] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -12,10 +13,12 @@ function App() {
   const formRef = useRef(null)
 
   useEffect(() => {
+    //Fungsi untuk fetch data nya
     const fetchClubs = async () => {
       setLoading(true)
       setError(null)
       try {
+        // Mengambil data dari API
         const response = await fetch(import.meta.env.VITE_API_URL)
         if (!response.ok) {
           throw new Error(`Permintaan gagal (HTTP ${response.status})`)

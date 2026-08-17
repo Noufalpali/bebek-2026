@@ -1,0 +1,101 @@
+  ALUR FETCH API - Football Club
+
+1. KONFIGURASI API (.env.local)
+
+  VITE_API_URL = https://www.thesportsdb.com/api/v1/json/3/search_all_teams.php?l=English%20Premier%20League
+
+  - API publik dari TheSportsDB, gratis tanpa API key
+  - Endpoint: search_all_teams, mengambil semua tim dari English Premier League
+  - Diakses via import.meta.env.VITE_API_URL (konvensi Vite)
+
+
+2. STATE AWAL (src/App.jsx, baris 9-12)
+
+  const [clubs, setClubs]       = useState([])      // array klub
+  const [loading, setLoading]   = useState(true)     // status loading
+  const [error, setError]       = useState(null)     // pesan error
+  const [reloadKey, setReloadKey]= useState(0)       // kunci untuk re-fetch
+
+
+3. PROSES FETCH (src/App.jsx, baris 15-36)
+
+  useEffect(() => {
+    const fetchClubs = async () => {
+      setLoading(true)                        // mulai loading
+      setError(null)                          // bersihkan error lama
+      try {
+        const response = await fetch(...)     // request ke API
+        if (!response.ok) throw Error(...)    cek HTTP status
+        const data = await response.json()    // parse JSON
+        setClubs(data.teams ?? [])            simpan ke state (fallback [])
+      } catch (err) {
+        setError(err.message)                 simpan pesan error
+      } finally {
+        setLoading(false)                     selesai loading (selalu jalan)
+      }
+    }
+    fetchClubs()
+  }, [reloadKey])                             re-fetch saat reloadKey berubah
+
+  Poin penting:
+  - Array kosong [] di awal → fetch hanya jalan 1x saat mount
+  - reloadKey berubah → useEffect jalan lagi → fetch ulang
+  - data.teams ?? [] → kalau field teams tidak ada, pakai array kosong
+
+
+4. TAMPILAN BERDASARKAN STATE (src/components/ClubList.jsx)
+
+  ClubList menerima 4 props: clubs, loading, error, onRetry
+
+  a. loading === true
+     → tampilkan LoadingSkeleton (6 kartu abstrak berkedip)
+
+  b. loading === false && error ada
+     → tampilkan ErrorBox dengan pesan error + tombol "Coba Lagi"
+     → tombol "Coba Lagi" panggil onRetry
+     → onRetry = setReloadKey(key + 1) → trigger re-fetch
+
+  c. loading === false && error === null && clubs kosong
+     → tampilkan "Belum ada klub yang tersedia."
+
+  d. loading === false && error === null && clubs ada data
+     → tampilkan grid ClubCard untuk setiap klub
+
+
+5. RENDER CLUB CARD (src/components/ClubCard.jsx)
+
+  Setiap klub ditampilkan sebagai kartu dengan:
+  - Logo/badge → gambar dari strBadge, atau ikon Shield kalau gagal/tidak ada
+  - Nama klub  → strTeam, fallback "Klub Tanpa Nama"
+  - Stadion    → strStadium, fallback "Tidak diketahui"
+  - Tahun      → intFormedYear, ditampilkan sebagai "Tahun 1878"
+  - Fallback gambar → onError pada <img> set imgFailed = true → tampilkan Shield
+
+
+6. ALUR KESELURUHAN
+
+
+  App mount
+      ↓
+  useEffect jalan → fetchClubs()
+      ↓
+  setLoading(true) → LoadingSkeleton tampil
+      ↓
+  fetch ke TheSportsDB API
+      ↓
+  ┌────────────┬──────────────┐
+  │  GAGAL     │  BERHASIL    │
+  ↓            ↓              ↓
+setError()   setClubs(data.teams)
+Loading      setLoading(false)
+selesai      ↓
+  ↓          ClubList render grid ClubCard
+ErrorBox     ↓
+tampil       Setiap ClubCard:
++ tombol     - render badge/ikon
+Coba Lagi    - render nama, stadion, tahun
+             ↓
+             Selesai
+
+  Retry flow:
+  User klik "Coba Lagi" → setReloadKey(n+1) → useEffect jalan lagi → fetch ulang
