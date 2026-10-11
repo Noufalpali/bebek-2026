@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react'
 import AuthShell from '../components/AuthShell'
+import GoogleButton from '../components/GoogleButton'
 import { loginSchema } from '../schemas/authSchema'
 import { useAuth } from '../context/useAuth'
 
@@ -61,7 +62,17 @@ function LoginPage() {
         </>
       }
     >
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+      <div className="space-y-5">
+        <GoogleButton />
+
+        <div className="flex items-center gap-3">
+          <span className="h-px flex-1 bg-hairline" />
+          <span className="font-text text-caption text-ink-48">atau</span>
+          <span className="h-px flex-1 bg-hairline" />
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="mt-5 space-y-5">
         <div>
           <label htmlFor="email" className="mb-2 block font-text text-caption-strong text-ink-80">
             Email

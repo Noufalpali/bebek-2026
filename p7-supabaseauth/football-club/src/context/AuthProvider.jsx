@@ -44,6 +44,17 @@ export function AuthProvider({ children }) {
     return data
   }
 
+  // LOGIN GOOGLE - arahkan ke consent screen Google, lalu balik ke halaman ini.
+  // Supabase otomatis membuat sesi lewat onAuthStateChange setelah redirect.
+  const signInWithGoogle = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin },
+    })
+    if (error) throw new Error(error.message)
+    return data
+  }
+
   // LOGOUT - hapus sesi di client dan di server Supabase
   const signOut = async () => {
     const { error } = await supabase.auth.signOut()
@@ -56,6 +67,7 @@ export function AuthProvider({ children }) {
     loading,
     signUp,
     signIn,
+    signInWithGoogle,
     signOut,
   }
 
